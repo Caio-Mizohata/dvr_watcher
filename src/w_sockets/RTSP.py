@@ -15,7 +15,7 @@ class RTSP_Protocol:
         self.loops: dict[str, asyncio.AbstractEventLoop] = {}
         self.stop_events: dict[str, threading.Event] = {}
 
-    async def connect(self, websocket: WebSocket, camera_id: str):
+    async def connect(self, websocket: WebSocket, camera_id: str) -> bool:
         await websocket.accept()
         
         # Garante que existe um conjunto de conexões para esta câmera
@@ -36,7 +36,7 @@ class RTSP_Protocol:
                 self.conexoes_ativas[camera_id].discard(websocket)
                 if not self.conexoes_ativas[camera_id]:
                     self.conexoes_ativas.pop(camera_id, None)
-                return
+                return False
             
             camera_service = CameraService(camera_id, rtsp_url)
             
@@ -53,6 +53,8 @@ class RTSP_Protocol:
             )
             self.stream_threads[camera_id] = thread
             thread.start()
+
+        return True
 
     def disconnect(self, websocket: WebSocket, camera_id: str):
         if camera_id in self.conexoes_ativas:
