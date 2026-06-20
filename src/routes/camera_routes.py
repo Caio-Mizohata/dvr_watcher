@@ -8,10 +8,13 @@ rtsp_protocol = RTSP_Protocol()
 # WebSocket endpoint para streaming de vídeo
 @router.websocket("/ws/camera/{camera_id}")
 async def camera_stream(websocket: WebSocket, camera_id: str):
-    await rtsp_protocol.connect(websocket, camera_id)
+    connected = await rtsp_protocol.connect(websocket, camera_id)
+    if not connected:
+        return
+
     try:
         while True:
             await websocket.receive_text()  # Mantém a conexão aberta
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         rtsp_protocol.disconnect(websocket, camera_id)
 
