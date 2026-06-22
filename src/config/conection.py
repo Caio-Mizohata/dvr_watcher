@@ -3,15 +3,24 @@ import os
 
 load_dotenv()
 
-# Adicione as URLs das câmeras ao dicionário usando as variáveis de ambiente se houver mais cameras
-URLS_CONFIG: dict[str, str] = {
-    "1": f"rtsp://{os.getenv('user')}:{os.getenv('password')}@{os.getenv('ip_address')}:554/cam/realmonitor?channel={os.getenv('channel_1')}&subtype=0",
-    "2": f"rtsp://{os.getenv('user')}:{os.getenv('password')}@{os.getenv('ip_address')}:554/cam/realmonitor?channel={os.getenv('channel_2')}&subtype=0",
-    # "3": f"rtsp://{os.getenv('user')}:{os.getenv('password')}@{os.getenv('ip_address')}:554/cam/realmonitor?channel={os.getenv('channel_3')}&subtype=0",
-    # "4": f"rtsp://{os.getenv('user')}:{os.getenv('password')}@{os.getenv('ip_address')}:554/cam/realmonitor?channel={os.getenv('channel_4')}&subtype=0",
-}
-
-
 def get_urls_config() -> dict[str, str]:
-    # Retorna o dicionário de URLs de câmeras, que pode ser usado em outros módulos
-    return URLS_CONFIG
+    # Abaixo, lê as variáveis de ambiente necessárias para construir as URLs RTSP
+    user = os.getenv("USER")
+    password = os.getenv("PASSWORD")
+    ip_address = os.getenv("IP_ADDRESS")
+
+    if not all([user, password, ip_address]):
+        raise ValueError("Configuração de câmera incompleta: USER, PASSWORD e IP_ADDRESS são obrigatórios.")
+
+    # Lê os canais configurados e monta as URLs correspondentes
+    urls: dict[str, str] = dict()
+    for i in range(1, 3):  # Suporta até 2 canais por enquanto, podendo ser expandido facilmente
+        channel_key = f"CHANNEL_{i}"
+        channel = os.getenv(channel_key)
+        if not channel:
+            continue  # Se o canal não estiver configurado, pula para o próximo
+        if channel:
+            urls[channel] = f"rtsp://{user}:{password}@{ip_address}:554/cam/realmonitor?channel={channel}&subtype=0"
+    
+    return urls
+
