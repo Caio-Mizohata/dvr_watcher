@@ -1,13 +1,605 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
-  <meta charset="utf-8">
-  <title>Frontend</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Monitoramento CCTV</title>
+  <style>
+    :root {
+      --bg: #0a0b10;
+      --panel: #12141a;
+      --border: #1e212b;
+      --border-active: #10b981;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --accent: #10b981;
+      --accent-dim: #059669;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --overlay-bg: rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 32px;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .clock {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cam-count {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cam-count strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .btn {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      border-color: var(--border-active);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .btn.active {
+      border-color: var(--border-active);
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--accent);
+    }
+
+    /* Grid */
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 16px 24px 24px;
+      flex: 1;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .camera-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .camera-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .camera-card.online {
+      border-color: var(--border-active);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .camera-card.online::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.25);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .video-wrap {
+      flex: 1;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Overlays */
+    .overlay-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: linear-gradient(to bottom, var(--overlay-bg), transparent);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .overlay-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: linear-gradient(to top, var(--overlay-bg), transparent);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .cam-time {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+    .fps-badge {
+      font-size: 0.68rem;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Footer */
+    footer {
+      padding: 10px 24px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .footer-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-stat .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .footer-stat .dot.online {
+      background: var(--accent);
+    }
+
+    .footer-stat .dot.offline {
+      background: var(--danger);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .grid-2x2 {
+        grid-template-columns: 1fr;
+        padding: 12px 16px 16px;
+      }
+
+      header {
+        padding: 10px 16px;
+      }
+
+      .toolbar {
+        padding: 8px 16px;
+      }
+
+      footer {
+        padding: 8px 16px;
+      }
+
+      .brand h1 {
+        font-size: 1rem;
+      }
+
+      .header-meta {
+        gap: 12px;
+      }
+
+      .clock {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .toolbar-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .toolbar-right {
+        display: none;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2a2e3a;
+    }
+  </style>
 </head>
+
 <body>
-  <app-root></app-root>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">DVR</div>
+      <div>
+        <h1>Central de Monitoramento FastAPI + WebSocket</h1>
+        <small>Este sistema funciona apenas na sua rede local</small>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="cam-count"><strong id="cam-online">0</strong> / <strong id="cam-total">4</strong> Câmeras
+        Online</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn active" id="btn-2x2">2×2 Grid</button>
+      <button class="btn" id="btn-1x1">1×1 Foco</button>
+    </div>
+  </div>
+
+  <main class="grid-2x2" id="camera-grid">
+    <!-- Câmera 1 -->
+    <div class="camera-card" id="card-1" data-camera="1">
+      <div class="video-wrap">
+        <canvas id="video-canvas-1" width="640" height="360"></canvas>
+        <div class="overlay-bottom">
+          <span class="fps-badge" id="fps-1">0 FPS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Câmera 2 -->
+    <div class="camera-card" id="card-2" data-camera="2">
+      <div class="video-wrap">
+        <canvas id="video-canvas-2" width="640" height="360"></canvas>
+        <div class="overlay-bottom">
+          <span class="fps-badge" id="fps-2">0 FPS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Câmera 3 -->
+    <div class="camera-card" id="card-3" data-camera="3">
+      <div class="video-wrap">
+        <canvas id="video-canvas-3" width="640" height="360"></canvas>
+        <div class="overlay-bottom">
+          <span class="fps-badge" id="fps-3">0 FPS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Câmera 4 -->
+    <div class="camera-card" id="card-4" data-camera="4">
+      <div class="video-wrap">
+        <canvas id="video-canvas-4" width="640" height="360"></canvas>
+        <div class="overlay-bottom">
+          <span class="fps-badge" id="fps-4">0 FPS</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-left">
+      <div class="footer-stat">
+        <span class="dot online"></span>
+        <span id="footer-online">0 Online</span>
+      </div>
+      <div class="footer-stat">
+        <span class="dot offline"></span>
+        <span id="footer-offline">0 Offline</span>
+      </div>
+    </div>
+    <div>Servidor FastAPI — Porta 8000</div>
+  </footer>
+
+  <script>
+    // ===== Configuração =====
+    const backendPort = 8000;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+
+    // ===== Estado =====
+    const cameraState = { 1: false, 2: false, 3: false, 4: false };
+    const frameCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    const fpsValues = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+    // ===== Utilitários =====
+    function drawNoVideo(ctx, canvas, message) {
+      ctx.fillStyle = '#050508';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid pattern
+      ctx.strokeStyle = 'rgba(30,33,43,0.6)';
+      ctx.lineWidth = 1;
+      const step = 40;
+      for (let x = 0; x < canvas.width; x += step) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += step) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Icon
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2 - 20;
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 24, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx, cy - 8, 10, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx - 14, cy + 16);
+      ctx.quadraticCurveTo(cx, cy + 6, cx + 14, cy + 16);
+      ctx.stroke();
+
+      // Text
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 15px "Segoe UI", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(message, canvas.width / 2, canvas.height / 2 + 30);
+    }
+
+    function updateStats() {
+      const online = Object.values(cameraState).filter(Boolean).length;
+      const offline = 4 - online;
+      document.getElementById('cam-online').textContent = online;
+      document.getElementById('cam-total').textContent = 4;
+      document.getElementById('footer-online').textContent = online + ' Online';
+      document.getElementById('footer-offline').textContent = offline + ' Offline';
+    }
+
+    function setCameraOnline(cameraId, online) {
+      cameraState[cameraId] = online;
+      const card = document.getElementById('card-' + cameraId);
+      if (online) {
+        card.classList.add('online');
+      } else {
+        card.classList.remove('online');
+      }
+      updateStats();
+    }
+
+    // ===== FPS Counter =====
+    setInterval(() => {
+      for (let i = 1; i <= 4; i++) {
+        fpsValues[i] = frameCounts[i];
+        frameCounts[i] = 0;
+        const el = document.getElementById('fps-' + i);
+        if (el) el.textContent = fpsValues[i] + ' FPS';
+      }
+    }, 1000);
+
+    // ===== Relógio =====
+    function tickClock() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('clock').textContent =
+        pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    // ===== Layout Toggle =====
+    const grid = document.getElementById('camera-grid');
+    const btn2x2 = document.getElementById('btn-2x2');
+    const btn1x1 = document.getElementById('btn-1x1');
+
+    btn2x2.addEventListener('click', () => {
+      grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      btn2x2.classList.add('active');
+      btn1x1.classList.remove('active');
+      document.querySelectorAll('.camera-card').forEach(c => c.style.display = 'flex');
+    });
+
+    btn1x1.addEventListener('click', () => {
+      // Simplesmente destaca a primeira câmera online ou a 1
+      grid.style.gridTemplateColumns = '1fr';
+      btn1x1.classList.add('active');
+      btn2x2.classList.remove('active');
+      // Mantém todas visíveis mas em coluna única — mais útil para mobile
+    });
+
+    // ===== WebSocket Streams =====
+    const streams = [
+      { canvasId: 'video-canvas-1', cameraId: '1' },
+      { canvasId: 'video-canvas-2', cameraId: '2' },
+      { canvasId: 'video-canvas-3', cameraId: '3' },
+      { canvasId: 'video-canvas-4', cameraId: '4' }
+    ];
+
+    streams.forEach(({ canvasId, cameraId }) => {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      let receivedFrame = false;
+      drawNoVideo(ctx, canvas, 'Sem vídeo');
+
+      const wsUrl = `${protocol}//${window.location.hostname}:${backendPort}/ws/camera/${cameraId}`;
+      const ws = new WebSocket(wsUrl);
+      ws.binaryType = 'blob';
+
+      ws.onopen = () => {
+        console.log(`Conectado à Câmera ${cameraId} em ${wsUrl}`);
+      };
+
+      ws.onmessage = async (event) => {
+        try {
+          receivedFrame = true;
+          frameCounts[cameraId]++;
+          if (!cameraState[cameraId]) setCameraOnline(cameraId, true);
+
+          const bitmap = await createImageBitmap(event.data);
+          ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          bitmap.close();
+        } catch (error) {
+          console.error(`Erro ao processar frame da Câmera ${cameraId}:`, error);
+          setCameraOnline(cameraId, false);
+          drawNoVideo(ctx, canvas, 'Sem vídeo');
+        }
+      };
+
+      ws.onerror = () => {
+        console.error(`Erro no WebSocket da Câmera ${cameraId}`);
+        if (!receivedFrame) {
+          setCameraOnline(cameraId, false);
+          drawNoVideo(ctx, canvas, 'Sem vídeo');
+        }
+      };
+
+      ws.onclose = () => {
+        console.log(`WebSocket da Câmera ${cameraId} desconectado`);
+        setCameraOnline(cameraId, false);
+        if (!receivedFrame) drawNoVideo(ctx, canvas, 'Sem vídeo');
+      };
+    });
+  </script>
 </body>
+
 </html>
