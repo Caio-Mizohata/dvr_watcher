@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from backend.src.w_sockets.RTSP import RTSP_Protocol
+from w_sockets.RTSP import RTSP_Protocol
 
 router: APIRouter = APIRouter()
 rtsp_protocol = RTSP_Protocol()
@@ -17,4 +17,4 @@ async def camera_stream(websocket: WebSocket, camera_id: str):
             await websocket.receive_text()  # Mantém a conexão aberta
     except (WebSocketDisconnect, RuntimeError):
         rtsp_protocol.disconnect(websocket, camera_id)
-
+        

@@ -23,4 +23,4 @@ def get_urls_config() -> dict[str, str]:
             urls[channel] = f"rtsp://{user}:{password}@{ip_address}:554/cam/realmonitor?channel={channel}&subtype=0"
     
     return urls
-
+    
