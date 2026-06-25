@@ -1,0 +1,27 @@
+<header class="command-header">
+  <div class="brand-block" aria-label="CCTV Command Center">
+    <div class="brand-mark" aria-hidden="true">
+      <span></span>
+    </div>
+    <div class="brand-copy">
+      <p class="eyebrow">Security Operations</p>
+      <h1>CCTV Command Center</h1>
+      <span>Monitoramento em tempo real via FastAPI + WebSocket</span>
+    </div>
+  </div>
+
+  <div class="operations-meta" aria-label="Status operacional">
+    <div class="status-pill">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      Rede Local
+    </div>
+    <div class="status-pill server">
+      FastAPI :{{ backendPort }}
+    </div>
+    <div class="coverage">
+      <span>{{ onlineTotal() }}/{{ totalCameras() }}</span>
+      cameras online
+    </div>
+    <time class="clock" [attr.datetime]="time()">{{ time() }}</time>
+  </div>
+</header>

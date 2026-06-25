@@ -1,0 +1,43 @@
+<section class="toolbar" aria-label="Controles de visualizacao">
+  <div class="toolbar-copy">
+    <span class="section-kicker">Live Matrix</span>
+    <h2>Matriz de monitoramento</h2>
+  </div>
+
+  <div class="toolbar-actions">
+    <div class="filter-group" aria-label="Filtros de camera">
+      <button type="button" class="filter-chip active" aria-pressed="true">Todas</button>
+      <button type="button" class="filter-chip" aria-pressed="false">Online</button>
+      <button type="button" class="filter-chip" aria-pressed="false">Offline</button>
+    </div>
+
+    <div class="layout-switch" role="group" aria-label="Modo de layout">
+      <button
+        type="button"
+        class="layout-button"
+        [class.active]="layoutMode() === 'grid-2x2'"
+        [attr.aria-pressed]="layoutMode() === 'grid-2x2'"
+        (click)="setLayoutMode('grid-2x2')"
+      >
+        <span class="grid-icon" aria-hidden="true"></span>
+        2x2
+      </button>
+      <button
+        type="button"
+        class="layout-button"
+        [class.active]="layoutMode() === 'focus-1x1'"
+        [attr.aria-pressed]="layoutMode() === 'focus-1x1'"
+        (click)="setLayoutMode('focus-1x1')"
+      >
+        <span class="focus-icon" aria-hidden="true"></span>
+        Foco
+      </button>
+    </div>
+
+    <div class="system-count" aria-label="Status geral das cameras">
+      <span><strong>{{ onlineTotal() }}</strong> online</span>
+      <span><strong>{{ offlineTotal() }}</strong> offline</span>
+      <span><strong>{{ totalCameras() }}</strong> total</span>
+    </div>
+  </div>
+</section>

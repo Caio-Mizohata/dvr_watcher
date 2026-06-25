@@ -1,0 +1,17 @@
+<section class="summary-grid" aria-label="Resumo operacional">
+  @for (card of summaryCards(); track card.label) {
+    <article
+      class="summary-card"
+      [class.success]="card.tone === 'success'"
+      [class.danger]="card.tone === 'danger'"
+      [class.info]="card.tone === 'info'"
+    >
+      <div class="card-topline">
+        <span class="metric-dot" aria-hidden="true"></span>
+        <span>{{ card.label }}</span>
+      </div>
+      <strong>{{ card.value }}</strong>
+      <small>{{ card.detail }}</small>
+    </article>
+  }
+</section>

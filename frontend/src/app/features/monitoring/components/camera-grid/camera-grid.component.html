@@ -1,0 +1,43 @@
+@if (layoutMode() === 'grid-2x2') {
+  <section class="grid-layout" aria-label="Matriz 2x2 de cameras">
+    @for (camera of cameras(); track camera.id) {
+      <app-camera-card
+        [camera]="camera"
+        [cameraId]="camera.id"
+        [streamEnabled]="camera.streamEnabled"
+        [fps]="fpsById()[camera.id]"
+        [isFocused]="camera.id === focusedCameraId()"
+        variant="grid"
+        (selected)="focusCamera($event)"
+      />
+    }
+  </section>
+} @else {
+  <section class="focus-layout" aria-label="Modo foco de camera">
+    <div class="focus-main">
+      <app-camera-card
+        [camera]="focusedCamera()"
+        [cameraId]="focusedCamera().id"
+        [streamEnabled]="focusedCamera().streamEnabled"
+        [fps]="fpsById()[focusedCamera().id]"
+        [isFocused]="true"
+        variant="featured"
+        (selected)="focusCamera($event)"
+      />
+    </div>
+
+    <aside class="focus-rail" aria-label="Cameras secundarias">
+      @for (camera of secondaryCameras(); track camera.id) {
+        <app-camera-card
+          [camera]="camera"
+          [cameraId]="camera.id"
+          [streamEnabled]="camera.streamEnabled"
+          [fps]="fpsById()[camera.id]"
+          [isFocused]="false"
+          variant="compact"
+          (selected)="focusCamera($event)"
+        />
+      }
+    </aside>
+  </section>
+}

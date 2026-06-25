@@ -1,0 +1,308 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+    var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-panel);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+:host(:hover) {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.32);
+  box-shadow: var(--shadow-panel-hover);
+}
+
+:host(:focus-visible) {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 3px;
+}
+
+:host(.online) {
+  border-color: rgba(52, 211, 153, 0.26);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.08),
+    var(--shadow-panel);
+}
+
+:host(.focused) {
+  border-color: rgba(56, 189, 248, 0.46);
+}
+
+:host(.featured) {
+  min-height: 100%;
+}
+
+:host(.compact) .card-header,
+:host(.compact) .card-footer {
+  padding: 10px;
+}
+
+:host(.compact) .camera-title small,
+:host(.compact) .video-overlay,
+:host(.compact) .card-footer span:nth-child(2) {
+  display: none;
+}
+
+:host(.compact) .camera-metrics {
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.camera-title {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.camera-id {
+  color: var(--color-accent-blue);
+  font-size: 0.66rem;
+  font-weight: 780;
+  letter-spacing: 0.13em;
+  line-height: 1;
+}
+
+.camera-title strong {
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.16;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.camera-title small {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.camera-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.status-badge,
+.fps-badge {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: rgba(2, 6, 23, 0.52);
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 740;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.status-badge span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-danger);
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.11);
+}
+
+.status-badge.online {
+  border-color: rgba(52, 211, 153, 0.25);
+  color: var(--color-accent);
+}
+
+.status-badge.online span {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12);
+}
+
+.fps-badge {
+  color: var(--color-accent-blue);
+}
+
+.video-wrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(30, 41, 59, 0.38), transparent 35%),
+    #020617;
+}
+
+:host(.featured) .video-wrap {
+  aspect-ratio: 16 / 9;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanline {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 100% 4px;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.video-wrap.no-signal canvas {
+  filter: saturate(0.55) brightness(0.72);
+}
+
+.offline-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at center, rgba(15, 23, 42, 0.22), rgba(2, 6, 23, 0.6)),
+    rgba(2, 6, 23, 0.18);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.offline-icon {
+  width: 44px;
+  height: 32px;
+  border: 2px solid rgba(148, 163, 184, 0.5);
+  border-radius: 8px;
+  position: relative;
+}
+
+.offline-icon::before,
+.offline-icon::after {
+  content: '';
+  position: absolute;
+}
+
+.offline-icon::before {
+  right: -11px;
+  top: 8px;
+  width: 13px;
+  height: 11px;
+  border: 2px solid rgba(148, 163, 184, 0.5);
+  border-left: 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.offline-icon::after {
+  left: -5px;
+  top: 14px;
+  width: 58px;
+  height: 2px;
+  background: var(--color-danger);
+  transform: rotate(-25deg);
+  box-shadow: 0 0 14px rgba(248, 113, 113, 0.46);
+}
+
+.offline-panel strong {
+  color: var(--color-text);
+  font-size: 0.96rem;
+  font-weight: 760;
+}
+
+.offline-panel span {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.video-overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 26px 12px 10px;
+  background: linear-gradient(to top, rgba(2, 6, 23, 0.86), transparent);
+  color: rgba(226, 232, 240, 0.82);
+  font-size: 0.67rem;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.card-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 11px 14px 13px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  color: var(--color-text-faint);
+  font-size: 0.68rem;
+  font-weight: 680;
+  line-height: 1.25;
+}
+
+.card-footer span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-footer strong {
+  color: var(--color-text-soft);
+  font-variant-numeric: tabular-nums;
+  font-weight: 760;
+}
+
+@media (max-width: 1180px) {
+  .card-footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .card-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .camera-metrics {
+    justify-content: flex-start;
+  }
+}

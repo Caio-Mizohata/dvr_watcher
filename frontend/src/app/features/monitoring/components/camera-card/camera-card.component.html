@@ -1,0 +1,45 @@
+<header class="card-header">
+  <div class="camera-title">
+    <span class="camera-id">CAM {{ camera().id.padStart(2, '0') }}</span>
+    <strong>{{ camera().label }}</strong>
+    <small>{{ camera().zone }}</small>
+  </div>
+
+  <div class="camera-metrics">
+    <span class="status-badge" [class.online]="camera().status === 'online'">
+      <span aria-hidden="true"></span>
+      {{ statusLabel() }}
+    </span>
+    <span class="fps-badge">{{ fps() }} FPS</span>
+  </div>
+</header>
+
+<div class="video-wrap" [class.no-signal]="camera().status === 'offline'">
+  <canvas
+    #videoCanvas
+    role="img"
+    [attr.aria-label]="camera().label + ' - stream de video'"
+    [attr.width]="canvasWidth"
+    [attr.height]="canvasHeight"
+  ></canvas>
+
+  <div class="scanline" aria-hidden="true"></div>
+
+  @if (camera().status === 'offline') {
+    <div class="offline-panel" aria-hidden="true">
+      <div class="offline-icon"></div>
+      <strong>Sem sinal</strong>
+      <span>{{ offlineMessage() }}</span>
+    </div>
+  }
+
+  <div class="video-overlay" aria-hidden="true">
+    <span>{{ camera().resolution }}</span>
+  </div>
+</div>
+
+<footer class="card-footer">
+  <span>Resolucao <strong>{{ camera().resolution }}</strong></span>
+  <span>Latencia <strong>{{ latencyLabel() }}</strong></span>
+  <span>Ultimo frame <strong>{{ lastFrameLabel() }}</strong></span>
+</footer>

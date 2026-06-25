@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 1680px);
+  margin: 0 auto;
+  padding: 18px 28px 8px;
+}
+
+.summary-card {
+  min-width: 0;
+  min-height: 126px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 15px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    var(--color-surface-raised);
+  box-shadow: var(--shadow-panel);
+}
+
+.card-topline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.07em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.metric-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--color-text-faint);
+}
+
+strong {
+  color: var(--color-text);
+  font-size: 1.85rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 780;
+  line-height: 1;
+}
+
+small {
+  color: var(--color-text-soft);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.summary-card.success {
+  border-color: rgba(52, 211, 153, 0.26);
+}
+
+.summary-card.success .metric-dot {
+  background: var(--color-accent);
+}
+
+.summary-card.success strong {
+  color: var(--color-accent);
+}
+
+.summary-card.danger {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.summary-card.danger .metric-dot {
+  background: var(--color-danger);
+}
+
+.summary-card.danger strong {
+  color: var(--color-danger);
+}
+
+.summary-card.info {
+  border-color: rgba(56, 189, 248, 0.28);
+}
+
+.summary-card.info .metric-dot {
+  background: var(--color-accent-blue);
+}
+
+.summary-card.info strong {
+  color: var(--color-accent-blue);
+}
+@media (max-width: 1180px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px 16px 6px;
+  }
+}
+
+@media (max-width: 460px) {
+  .summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

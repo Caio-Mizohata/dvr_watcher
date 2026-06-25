@@ -1,0 +1,19 @@
+<footer class="monitoring-footer">
+  <div class="footer-left">
+    <span class="product">CCTV Command Center <strong>v1.0.0</strong></span>
+    <div class="footer-stat">
+      <span class="status-dot online" aria-hidden="true"></span>
+      <span>{{ onlineTotal() }} Online</span>
+    </div>
+    <div class="footer-stat">
+      <span class="status-dot offline" aria-hidden="true"></span>
+      <span>{{ offlineTotal() }} Offline</span>
+    </div>
+  </div>
+
+  <div class="footer-right">
+    <span>Sistema local</span>
+    <span>FastAPI WebSocket</span>
+    <span>Porta {{ backendPort }}</span>
+  </div>
+</footer>
