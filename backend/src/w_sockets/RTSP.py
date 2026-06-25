@@ -3,8 +3,8 @@ import logging
 import threading
 from fastapi import WebSocket
 
-from services.camera_service import CameraService
-from config.conection import get_urls_config
+from backend.src.services.camera_service import CameraService
+from backend.src.config.conection import get_urls_config
 
 logger = logging.getLogger(__name__)
 

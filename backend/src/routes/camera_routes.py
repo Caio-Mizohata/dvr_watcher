@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from w_sockets.RTSP import RTSP_Protocol
+from backend.src.w_sockets.RTSP import RTSP_Protocol
 
 router: APIRouter = APIRouter()
 rtsp_protocol = RTSP_Protocol()
