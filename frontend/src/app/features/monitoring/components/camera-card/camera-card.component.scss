@@ -49,8 +49,7 @@
 }
 
 :host(.compact) .camera-title small,
-:host(.compact) .video-overlay,
-:host(.compact) .card-footer span:nth-child(2) {
+:host(.compact) .card-footer span:nth-child(1) {
   display: none;
 }
 
@@ -245,29 +244,9 @@ canvas {
   font-size: 0.78rem;
 }
 
-.video-overlay {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 26px 12px 10px;
-  background: linear-gradient(to top, rgba(2, 6, 23, 0.86), transparent);
-  color: rgba(226, 232, 240, 0.82);
-  font-size: 0.67rem;
-  font-weight: 720;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
 .card-footer {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 11px 14px 13px;
   border-top: 1px solid rgba(148, 163, 184, 0.12);
