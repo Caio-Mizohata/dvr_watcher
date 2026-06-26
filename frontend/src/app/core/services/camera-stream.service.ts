@@ -2,19 +2,10 @@ import { DOCUMENT } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import {
-  WEBSOCKET_BACKEND_PORT,
-  WEBSOCKET_CAMERA_PATH,
-  WEBSOCKET_KEEPALIVE_INTERVAL_MS,
-} from '../constants/websocket.constants';
+import { WEBSOCKET_BACKEND_PORT, WEBSOCKET_CAMERA_PATH, WEBSOCKET_KEEPALIVE_INTERVAL_MS } from '../constants/websocket.constants';
 
 export class CameraStreamError extends Error {
-  constructor(
-    message: string,
-    readonly code: number,
-    readonly wasOpened: boolean,
-    readonly receivedFrame: boolean,
-  ) {
+  constructor(message: string, readonly code: number, readonly wasOpened: boolean, readonly receivedFrame: boolean) {
     super(message);
     this.name = 'CameraStreamError';
   }
@@ -66,9 +57,7 @@ export class CameraStreamService {
           return;
         }
 
-        subscriber.error(
-          new CameraStreamError(
-            `WebSocket closed for camera ${cameraId}`,
+        subscriber.error(new CameraStreamError(`WebSocket closed for camera ${cameraId}`,
             event.code,
             wasOpened,
             receivedFrame,

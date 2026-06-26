@@ -66,10 +66,7 @@ export class CameraStateService {
         return frames;
       }
 
-      return {
-        ...frames,
-        [cameraId]: value,
-      };
+      return {...frames, [cameraId]: value};
     });
   }
 }

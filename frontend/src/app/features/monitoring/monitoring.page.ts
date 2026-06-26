@@ -8,13 +8,7 @@ import { StatusSummaryComponent } from './components/status-summary/status-summa
 
 @Component({
   selector: 'app-monitoring-page',
-  imports: [
-    CommandHeaderComponent,
-    StatusSummaryComponent,
-    MonitoringToolbarComponent,
-    CameraGridComponent,
-    MonitoringFooterComponent,
-  ],
+  imports: [CommandHeaderComponent, StatusSummaryComponent, MonitoringToolbarComponent, CameraGridComponent, MonitoringFooterComponent],
   templateUrl: './monitoring.page.html',
   styleUrl: './monitoring.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

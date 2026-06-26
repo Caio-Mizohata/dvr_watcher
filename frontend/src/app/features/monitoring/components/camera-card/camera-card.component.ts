@@ -1,34 +1,10 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ElementRef,
-  computed,
-  effect,
-  inject,
-  input,
-  output,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, input, output, signal, viewChild } from '@angular/core';
 import { retry, Subscription, throwError, timer } from 'rxjs';
-
-import {
-  CAMERA_CANVAS_HEIGHT,
-  CAMERA_CANVAS_WIDTH,
-} from '../../../../core/constants/camera.constants';
-import {
-  WEBSOCKET_MAX_RECONNECT_ATTEMPTS,
-  WEBSOCKET_MAX_RECONNECT_DELAY_MS,
-  WEBSOCKET_RECONNECT_DELAY_MS,
-} from '../../../../core/constants/websocket.constants';
+import { CAMERA_CANVAS_HEIGHT, CAMERA_CANVAS_WIDTH } from '../../../../core/constants/camera.constants';
+import { WEBSOCKET_MAX_RECONNECT_ATTEMPTS, WEBSOCKET_MAX_RECONNECT_DELAY_MS, WEBSOCKET_RECONNECT_DELAY_MS } from '../../../../core/constants/websocket.constants';
 import { CameraViewModel } from '../../../../core/models/camera.model';
 import { CameraStateService } from '../../../../core/services/camera-state.service';
-import {
-  CameraStreamError,
-  CameraStreamService,
-} from '../../../../core/services/camera-stream.service';
+import { CameraStreamError, CameraStreamService } from '../../../../core/services/camera-stream.service';
 import { FpsService } from '../../../../core/services/fps.service';
 
 type CameraCardVariant = 'grid' | 'featured' | 'compact';
@@ -75,16 +51,13 @@ export class CameraCardComponent implements AfterViewInit {
   readonly canvasWidth = CAMERA_CANVAS_WIDTH;
   readonly canvasHeight = CAMERA_CANVAS_HEIGHT;
   readonly statusLabel = computed(() => (this.camera().status === 'online' ? 'Online' : 'Offline'));
-  readonly offlineMessage = computed(() =>
-    this.camera().streamEnabled ? 'Aguardando frames do WebSocket' : 'Canal nao configurado no backend',
-  );
+  readonly offlineMessage = computed(() => this.camera().streamEnabled ? 'Aguardando frames do WebSocket' : 'Canal nao configurado no backend');
   readonly lastFrameLabel = computed(() => this.formatLastFrame(this.camera().lastFrameAt));
   readonly latencyLabel = computed(() => {
     const fps = this.fps();
     return fps > 0 ? `${Math.max(18, 96 - fps * 3)} ms` : '-- ms';
   });
-  private readonly streamConfig = computed<CameraStreamConfig>(
-    () => ({
+  private readonly streamConfig = computed<CameraStreamConfig>(() => ({
       cameraId: this.cameraId(),
       streamEnabled: this.streamEnabled(),
     }),

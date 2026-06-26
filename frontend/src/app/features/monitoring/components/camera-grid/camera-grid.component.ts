@@ -12,9 +12,7 @@ import { CameraCardComponent } from '../camera-card/camera-card.component';
   templateUrl: './camera-grid.component.html',
   styleUrl: './camera-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '[class.is-focus]': 'layoutMode() === "focus-1x1"',
-  },
+  host: {'[class.is-focus]': 'layoutMode() === "focus-1x1"',},
 })
 export class CameraGridComponent {
   private readonly cameraState = inject(CameraStateService);
