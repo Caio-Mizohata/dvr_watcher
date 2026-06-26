@@ -32,14 +32,9 @@
       <span>{{ offlineMessage() }}</span>
     </div>
   }
-
-  <div class="video-overlay" aria-hidden="true">
-    <span>{{ camera().resolution }}</span>
-  </div>
 </div>
 
 <footer class="card-footer">
-  <span>Resolucao <strong>{{ camera().resolution }}</strong></span>
   <span>Latencia <strong>{{ latencyLabel() }}</strong></span>
   <span>Ultimo frame <strong>{{ lastFrameLabel() }}</strong></span>
 </footer>
