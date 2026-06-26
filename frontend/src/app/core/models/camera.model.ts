@@ -4,7 +4,6 @@ export interface CameraDefinition {
   readonly id: string;
   readonly label: string;
   readonly zone: string;
-  readonly resolution: string;
   readonly streamEnabled: boolean;
 }
 
