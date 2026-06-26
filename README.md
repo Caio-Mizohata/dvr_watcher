@@ -240,20 +240,3 @@ ws://localhost:8000/ws/camera/1
 ```
 
 O backend envia frames JPEG em mensagens binarias. O cliente mantem a conexao viva enviando mensagens `ping` periodicamente.
-
-## Observacoes importantes
-
-- O arquivo `.env` contem credenciais do DVR e nao deve ser versionado.
-- O CORS esta liberado para todas as origens por padrao, adequado para desenvolvimento local.
-- O backend atualmente percorre `channel_1` e `channel_2` em `get_urls_config()`. Para mais canais, expanda o intervalo nesse arquivo e adicione as cameras correspondentes no frontend.
-- Se o navegador exibir a camera como offline, confira se a URL RTSP abre no VLC ou em outra ferramenta antes de investigar o frontend.
-- Em producao, revise CORS, autenticacao, HTTPS/WSS e protecao das credenciais.
-
-## Roadmap sugerido
-
-- Autenticacao no dashboard.
-- Cadastro dinamico de cameras.
-- Healthcheck HTTP para status do backend.
-- Logs estruturados por camera.
-- Suporte configuravel a resolucao, qualidade JPEG e subtipo RTSP.
-- Deploy com Docker Compose.
