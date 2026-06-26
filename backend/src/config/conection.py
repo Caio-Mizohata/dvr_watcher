@@ -20,6 +20,10 @@ def get_urls_config() -> dict[str, str]:
         if not channel:
             continue  # Se o canal não estiver configurado, pula para o próximo
         if channel:
+            # A configuração pode variar dependendo do DVR, altere para sua url RTSP específica se 
+
+            # URL padrão para DVRs ICSee
+            # urls[channel] = f"rtsp://{user}:{password}@{ip_address}:554/12/"
             urls[channel] = f"rtsp://{user}:{password}@{ip_address}:554/cam/realmonitor?channel={channel}&subtype=0"
     
     return urls
