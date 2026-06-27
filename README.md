@@ -1,8 +1,6 @@
 # DVR Watcher
 
-Aplicacao de monitoramento de cameras em tempo real que conecta um DVR via RTSP, processa os frames no backend e entrega o video para o frontend por WebSocket.
-
-O projeto foi pensado para redes locais: o backend abre o stream RTSP com OpenCV, converte cada frame para JPEG e transmite os bytes para uma interface Angular com cards de cameras, status online/offline, reconexao automatica e renderizacao em canvas.
+Aplicação de monitoramento de câmeras em tempo real para redes locais.
 
 ## Funcionalidades
 
@@ -19,7 +17,7 @@ O projeto foi pensado para redes locais: o backend abre o stream RTSP com OpenCV
 
 **Backend**
 
-- Python 3.12
+- Python 3.11+ ou superior
 - FastAPI
 - Uvicorn
 - OpenCV headless
@@ -65,38 +63,24 @@ O projeto foi pensado para redes locais: o backend abre o stream RTSP com OpenCV
         `-- features/monitoring/
 ```
 
-## Pre-requisitos
+## Pré-requisitos
 
-- Python 3.12+
+- Python 3.11+ ou superior
 - Node.js compativel com Angular 21
-- npm
+- npm ou yarn
 - DVR/camera com acesso RTSP na rede local
 - Credenciais de acesso ao DVR
 
-## Configuracao do backend
+## Configuração do backend
 
-Entre na pasta do backend e crie o arquivo de ambiente a partir do exemplo.
+Entre na pasta do backend e crie o arquivo de ambiente a partir do exemplo de `.env.example`:
 
-Linux/macOS:
-
-```bash
-cd backend
-cp .env.example .env
-```
-
-Windows PowerShell:
-
-```powershell
-cd backend
-Copy-Item .env.example .env
-```
-
-Edite `backend/.env` com os dados do seu DVR:
+Edite em `backend/.env` com as credenciais do seu DVR:
 
 ```env
 user=seu_usuario
 password=sua_senha
-ip_address=192.168.0.100
+ip_address=seu_ip (ex: 192.168.0.100)
 channel_1=1
 channel_2=2
 ```
@@ -106,15 +90,27 @@ As variaveis `channel_1` e `channel_2` definem os IDs que o frontend deve usar a
 ```text
 ws://localhost:8000/ws/camera/1
 ws://localhost:8000/ws/camera/2
+...
 ```
 
-A URL RTSP atual e montada em `backend/src/config/conection.py` no formato:
+> Você pode adicionar quantos canais quiser, basta criar novas variaveis `channel_N` no `.env` e atualizar o frontend com os mesmos IDs.
+
+---
+
+### A URL RTSP atual é montada em `backend/src/config/conection.py` no formato
 
 ```text
 rtsp://usuario:senha@ip_do_dvr:554/cam/realmonitor?channel={channel}&subtype=0
 ```
 
-Se o seu DVR usa outro padrao de RTSP, altere esse arquivo para o formato exigido pelo fabricante.
+## Se o seu DVR usa outro padrão de RTSP, altere esse arquivo para o formato exigido pelo fabricante
+
+### Atualmente o projeto foi testado com os seguintes DVRs
+
+| Fabricante | Modelo | URL RTSP |
+|------------|--------|-----------|
+| Intelbras | MHDX-1116 | rtsp://usuario:senha@ip_do_dvr:554/cam/realmonitor?channel={channel}&subtype=0 |
+| ICSee | X6-WEQ | rtsp://usuario:senha@ip_do_dvr:554/12/ |
 
 ## Rodando o backend
 
@@ -126,7 +122,7 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 cd src
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
+python3 app.py
 ```
 
 Windows PowerShell:
@@ -137,16 +133,14 @@ py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 cd src
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
+python3 app.py
 ```
 
-O backend ficara disponivel em:
+O backend ficará disponivel em:
 
 ```text
 http://127.0.0.1:8000
 ```
-
-> Observacao: execute o `uvicorn app:app` a partir de `backend/src`, pois os imports internos do backend estao organizados considerando essa pasta como raiz.
 
 ## Rodando o frontend
 
@@ -195,6 +189,7 @@ export const DEFAULT_CAMERAS = [
   {
     id: '1',
     label: 'Camera 01',
+    // Altere para o nome do local da camera
     zone: 'Entrada principal',
     streamEnabled: true,
   },
@@ -202,30 +197,6 @@ export const DEFAULT_CAMERAS = [
 ```
 
 O `id` precisa bater com o canal configurado no backend. Se `streamEnabled` estiver como `false`, o card aparece como canal inativo e nao tenta abrir o WebSocket.
-
-## Scripts uteis
-
-Frontend no Linux/macOS ou Windows:
-
-```bash
-npm start
-npm run build
-npm test
-```
-
-Backend no Linux/macOS:
-
-```bash
-cd backend/src
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
-```
-
-Backend no Windows PowerShell:
-
-```powershell
-cd backend\src
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
-```
 
 ## Endpoint WebSocket
 
